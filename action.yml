@@ -1,0 +1,25 @@
+name: "ML-Assisted License Detector (prototype)"
+description: "Detects license(s) in a repository using TF-IDF + fuzzy matching. Prototype for code compliance."
+inputs:
+  repo_path:
+    description: 'Path to repo to scan (default .)'
+    required: false
+    default: '.'
+  spdx_templates_path:
+    description: 'Path inside the container to SPDX templates (default ./spdx_templates)'
+    required: false
+    default: './spdx_templates'
+  fail_on_ambiguous:
+    description: 'If true, action fails when verdict is AMBIGUOUS or NONE'
+    required: false
+    default: 'true'
+outputs:
+  report:
+    description: 'JSON report (stringified)'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.repo_path }}
+    - ${{ inputs.spdx_templates_path }}
+    - ${{ inputs.fail_on_ambiguous }}
