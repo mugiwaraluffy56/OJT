@@ -1,51 +1,70 @@
-# ML-Assisted License Detector (prototype) — GitHub Action
-# puneeth
-This action scans a repository for license files and headers and matches them against SPDX templates using TF-IDF + fuzzy matching.
+# License Detection
 
-## How to use (workflow example)
+A lightweight, efficient system for automatically detecting software licenses from text files, repositories, or project metadata. This project helps with compliance, auditing, and project analysis by identifying licenses such as MIT, Apache-2.0, GPL, BSD, and more.
 
-```yaml
-name: License Check
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+## 🚀 Features
 
-jobs:
-  license-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run license detector
-        uses: ./.github/actions/license-detector
-        with:
-          repo_path: '.'
-          spdx_templates_path: './.github/actions/license-detector/spdx_templates'  # optional
-          fail_on_ambiguous: 'true'
+- **Automated License Identification**
+- **Machine Learning-Based Classification**
+- **Supports Multiple License Types**
+- **Fast & Lightweight**
+- **CLI Tool + Library**
+- **Extensible Architecture**
 
----
+## 📂 Project Structure
+```
+License-Detection/
+├── data/
+├── models/
+├── src/
+│   ├── preprocessing/
+│   ├── classifier/
+│   ├── utils/
+│   └── cli/
+├── tests/
+├── docs/
+├── examples/
+└── README.md
+```
 
-# How to wire SPDX templates quickly
-- Easiest: clone SPDX license text into the action folder:
-  - `git clone https://github.com/spdx/license-list-data.git`
-  - copy `license-list-data/text/*.txt` into `.github/actions/license-detector/spdx_templates/`
-- Or put the small set you care about (`MIT.txt`, `Apache-2.0.txt`, `GPL-3.0-only.txt`, etc.) in that folder.
+## 🧠 How It Works
 
----
+### 1. Preprocessing
+### 2. Feature Extraction
+### 3. Classification
+### 4. Output Formats
 
-# What I delivered
-- A **complete GitHub Action** (container) that runs a **small, CI-friendly license detector** and returns a JSON report and exit code.
-- The detector uses:
-  - heuristics to find license files and headers
-  - TF-IDF cosine similarity vs SPDX templates
-  - fuzzy partial matching (rapidfuzz)
-  - aggregated verdicts: `ACCEPT`, `POSSIBLE`, `AMBIGUOUS`, `NONE`, or `DUAL_MAYBE`
+## 🔧 Installation
+```sh
+git clone https://github.com/<your-username>/License-Detection.git
+cd License-Detection
+```
 
----
+## 💻 Usage
+```sh
+license-detect path/to/file.txt
+```
 
-# Next steps (pick any, I’ll implement right away)
-- 1) **Upgrade to embeddings**: replace TF-IDF with `sentence-transformers` (I'll give the Dockerfile changes and detector changes).
-- 2) **Add GitHub annotation**: post inline annotations or PR comment with matched snippets & confidence.
-- 3) **Add unit tests / validation dataset**: I’ll add a small test harness and synthetic examples to tune thresholds.
-- 4) **Provide a repo PR-ready zip**: everything placed in a ready-to-commit folder.
+## 🧪 Testing
+```sh
+pytest tests/
+```
 
-Pick one of the 4 (or say “just give me the full-embedding version now”) and I’ll output the exact files/patches for that.
+## 📊 Dataset
+SPDX License List, curated license texts, and fragments.
+
+## 🛠️ Roadmap
+- [ ] Transformer model
+- [ ] REST API
+- [ ] Web UI
+- [ ] Multi-language detection
+- [ ] Better confidence scoring
+
+## 🤝 Contributing
+PRs and issues welcome.
+
+## 📜 License
+MIT License.
+
+## 🙌 Acknowledgements
+SPDX and community tools.
