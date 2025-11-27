@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](#)
 [![Code Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen.svg)](#)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](#docker-usage)
 
 ---
 
@@ -14,32 +15,24 @@
 - [1. Executive Summary](#1-executive-summary)
 - [2. The Challenge of License Compliance](#2-the-challenge-of-license-compliance)
 - [3. Core Concepts and Technology](#3-core-concepts-and-technology)
-  - [3.1. The AI Engine: Transformer-Based Classification](#31-the-ai-engine-transformer-based-classification)
-  - [3.2. Dynamic Learning: On-the-Fly Fine-Tuning](#32-dynamic-learning-on-the-fly-fine-tuning)
-  - [3.3. The Scanner: Codebase Analysis](#33-the-scanner-codebase-analysis)
 - [4. Features](#4-features)
 - [5. Installation Guide](#5-installation-guide)
-  - [5.1. Prerequisites](#51-prerequisites)
-  - [5.2. Step-by-Step Installation](#52-step-by-step-installation)
-- [6. Comprehensive Usage Guide](#6-comprehensive-usage-guide)
-  - [6.1. CLI Arguments](#61-cli-arguments)
-  - [6.2. Usage Scenarios](#62-usage-scenarios)
-- [7. Dataset Curation and Model Training](#7-dataset-curation-and-model-training)
-  - [7.1. The Critical Role of Data](#71-the-critical-role-of-data)
-  - [7.2. Expanding the Dataset](#72-expanding-the-dataset)
-- [8. Architectural Blueprint](#8-architectural-blueprint)
-- [9. Developer's Guide](#9-developers-guide)
-  - [9.1. Setting Up a Development Environment](#91-setting-up-a-development-environment)
-  - [9.2. Contribution Workflow](#92-contribution-workflow)
-- [10. Project Roadmap](#10-project-roadmap)
-- [11. Disclaimer](#11-disclaimer)
-- [12. License](#12-license)
+  - [6.1. Training the Model](#61-training-the-model)
+  - [6.2. Using the CLI](#62-using-the-cli)
+  - [6.3. Using the REST API](#63-using-the-rest-api)
+- [7. Docker Usage](#7-docker-usage)
+- [8. Dataset Curation and Model Training](#8-dataset-curation-and-model-training)
+- [9. Architectural Blueprint](#9-architectural-blueprint)
+- [10. Developer's Guide](#10-developers-guide)
+- [11. Project Roadmap](#11-project-roadmap)
+- [12. Disclaimer](#12-disclaimer)
+- [13. License](#13-license)
 
 ---
 
 ## 1. Executive Summary
 
-AI License Detector is a command-line tool engineered to identify software licenses within a file or directory. It leverages a sophisticated, transformer-based language model for semantic understanding of license texts, moving beyond the limitations of traditional keyword-based detection methods. The system is designed to be extensible, allowing users to expand its knowledge base by adding new license examples and retraining the model on the fly. This document serves as a comprehensive guide to its usage, architecture, and future development.
+AI License Detector is a versatile tool engineered to identify software licenses. It provides a CLI for local usage, a REST API for integration into other services, and is fully containerized with Docker for easy deployment. It leverages a sophisticated, transformer-based language model for semantic understanding of license texts, moving beyond the limitations of traditional keyword-based detection methods. The system is designed to be extensible, allowing users to expand its knowledge base by adding new license examples and retraining the model.
 
 ## 2. The Challenge of License Compliance
 
@@ -49,36 +42,21 @@ AI License Detector aims to address this challenge by providing a more intellige
 
 ## 3. Core Concepts and Technology
 
-### 3.1. The AI Engine: Transformer-Based Classification
-
-The core of this tool is a transformer-based language model from the Hugging Face ecosystem. The current implementation utilizes `microsoft/MiniLM-L12-H384-uncased`, a distilled version of BERT that offers a balance of performance and efficiency. This model is capable of understanding the contextual nuances of language, making it well-suited for classifying complex legal texts like software licenses.
-
-### 3.2. Train-then-Infer Workflow
-
-This project now follows a more robust and efficient "train-then-infer" workflow. A dedicated script, `train.py`, is used to fine-tune the AI model on the dataset of license texts. This process creates a fine-tuned model that is saved to the `fine-tuned-model` directory. The `license-detect` command then loads this pre-trained, fine-tuned model for fast and efficient inference, without the need to retrain every time.
-
-### 3.3. The Scanner: Codebase Analysis
-
-The `CodeGalaxyScanner` is responsible for finding potential license files within a codebase. It recursively scans the specified directory and uses a set of heuristics to identify files that are likely to contain license information. Currently, it looks for files named `LICENSE` or `COPYING`, or any file that contains the word "license" (case-insensitive) within its first 1024 bytes.
+This project is built on a modern "train-then-infer" workflow. A dedicated script, `train.py`, is used to fine-tune a `microsoft/MiniLM-L12-H384-uncased` model on the dataset of license texts. This process creates a fine-tuned model that is saved to the `fine-tuned-model` directory. The CLI and API then load this pre-trained, fine-tuned model for fast and efficient inference.
 
 ## 4. Features
 
 -   **State-of-the-Art AI Model**: Utilizes a `microsoft/MiniLM-L12-H384-uncased` model for semantic text classification.
--   **Dedicated Training Pipeline**: A `train.py` script for fine-tuning the model on your custom dataset.
+-   **Dedicated Training Pipeline**: A `train.py` script for fine-tuning the model on your custom dataset, with a basic evaluation pipeline.
 -   **Saved and Reusable Model**: The fine-tuned model is saved to disk, allowing for fast inference without retraining.
--   **Extensible and Scalable Dataset**: The training dataset can be easily expanded by adding new license files.
+-   **Multiple Interfaces**:
+    -   **CLI**: For local analysis of files and directories.
+    -   **REST API**: For programmatic access and integration.
+-   **Dockerized**: Comes with a `Dockerfile` and `docker-compose.yml` for easy and reproducible deployment.
+-   **Extensible Dataset**: The training dataset can be easily expanded by adding new license files.
 -   **Automated Data Sourcing**: A utility script, `download_licenses.py`, is included to fetch license texts from the official SPDX license list.
--   **Recursive Directory Scanning**: The tool can analyze entire codebases to identify license files.
--   **Simple and Clean CLI**: A single command interface for ease of use.
 
 ## 5. Installation Guide
-
-### 5.1. Prerequisites
-
--   Python 3.9 or higher
--   `pip` package manager
-
-### 5.2. Step-by-Step Installation
 
 1.  **Clone the repository:**
     ```sh
@@ -92,16 +70,14 @@ The `CodeGalaxyScanner` is responsible for finding potential license files withi
     source venv/bin/activate
     ```
 
-3.  **Install the dependencies in editable mode:** This allows you to modify the source code and have the changes immediately reflected.
+3.  **Install the dependencies:**
     ```sh
     pip3 install -e .
     ```
 
 ## 6. Comprehensive Usage Guide
 
-This tool follows a two-step process: **Train**, then **Detect**.
-
-### Step 1: Train the Model
+### 6.1. Training the Model
 
 Before you can detect licenses, you must first train the AI model on the dataset in the `data` directory.
 
@@ -111,7 +87,7 @@ python3 train.py
 ```
 This will fine-tune the model and save it to the `fine-tuned-model` directory. You only need to run this script when you have updated the training data.
 
-### Step 2: Detect Licenses
+### 6.2. Using the CLI
 
 Once the model is trained, you can use the `license-detect` command to analyze your codebases.
 
@@ -120,74 +96,77 @@ Once the model is trained, you can use the `license-detect` command to analyze y
 license-detect /path/to/your/project
 ```
 
-**Analyzing a single file:**
+### 6.3. Using the REST API
+
+The REST API provides a way to access the license detection functionality over the network.
+
+**Run the API server:**
 ```sh
-license-detect /path/to/your/LICENSE.md
+python3 api.py
+```
+The API will be available at `http://localhost:8000`.
+
+**Send a prediction request:**
+You can use a tool like `curl` to send a POST request to the `/predict` endpoint:
+```sh
+curl -X POST "http://localhost:8000/predict" \
+-H "Content-Type: application/json" \
+-d '{"text": "Permission is hereby granted..."}'
 ```
 
-## 7. Dataset Curation and Model Training
+## 7. Docker Usage
 
-### 7.1. The Critical Role of Data
+The application is fully containerized for easy deployment.
 
-The accuracy of this AI model is directly proportional to the size and quality of its training data. The current dataset is small and intended as a proof-of-concept. For a production-ready system, a dataset containing hundreds or thousands of examples for each license category is required.
+1.  **Build and run the container:**
+    ```sh
+    docker-compose up --build
+    ```
+    This will build the Docker image and start the API service. The API will be available at `http://localhost:8000`.
 
-### 7.2. Expanding the Dataset and Retraining
+2.  **Train the model inside the container:**
+    ```sh
+    docker-compose run --rm api python3 train.py
+    ```
 
-You can improve the model's accuracy by adding more license texts to the `data` directory.
+## 8. Dataset Curation and Model Training
+
+The accuracy of the model is highly dependent on the training data. You can improve the model's accuracy by adding more license texts to the `data` directory and then retraining the model.
 
 **Using the `download_licenses.py` script:**
 
 1.  Open `download_licenses.py` and add the desired SPDX license IDs to the `LICENSE_IDS` list.
 2.  Run the script: `python3 download_licenses.py`.
-3.  Open `license_detector/cli.py` and `train.py` and update the `filename_to_canonical` dictionary to map the new filenames to their canonical names.
+3.  Update the `filename_to_canonical` dictionary in `train.py`.
+4.  Retrain the model: `python3 train.py`.
 
-**Adding a license manually:**
-
-1.  Save the license text to a `.txt` file in the `data` directory.
-2.  Update the `filename_to_canonical` dictionary in `train.py`.
-
-After expanding the dataset, simply run the training script again to create an updated fine-tuned model:
-```sh
-python3 train.py
-```
-
-## 8. Architectural Blueprint
+## 9. Architectural Blueprint
 
 -   `license_detector/`: The main Python package.
-    -   `cli.py`: The entry point for the `license-detect` command. It loads the fine-tuned model and uses it for inference.
-    -   `models/soul_reader.py`: Defines the `SoulReader` class, which encapsulates the `transformers` model and the training and prediction logic.
-    -   `scanner/code_galaxy.py`: Defines the `CodeGalaxyScanner` class, responsible for finding potential license files.
+-   `api.py`: The entry point for the FastAPI REST API.
 -   `train.py`: The dedicated script for training the model.
 -   `data/`: Contains the `.txt` files used for training the model.
--   `download_licenses.py`: A utility script for downloading license texts from the SPDX repository.
+-   `download_licenses.py`: A utility script for downloading license texts.
+-   `Dockerfile`: Defines the Docker image for the application.
+-   `docker-compose.yml`: For easy building and running of the Docker container.
 -   `setup.py`: Defines the project's metadata and dependencies.
 
-## 9. Developer's Guide
+## 10. Developer's Guide
 
-### 9.1. Setting Up a Development Environment
+-   **Development Environment**: Follow the installation guide in section 5.
+-   **Contribution**: Fork the repo, create a branch, make your changes, and submit a pull request.
 
-Follow the installation guide in section 5 to set up a development environment. The editable install (`-e`) is crucial for development.
+## 11. Project Roadmap
 
-### 9.2. Contribution Workflow
+-   [ ] **Build a Comprehensive Dataset**: The highest priority is to expand the training dataset.
+-   [ ] **Hyperparameter Tuning**: Experiment with different training hyperparameters.
+-   [ ] **Advanced Scanning**: Enhance the scanner to detect license headers in source files.
+-   [ ] **Batch Predictions**: Add a batch prediction endpoint to the API.
 
-1.  Fork the repository.
-2.  Create a new branch for your feature or bug fix.
-3.  Make your changes.
-4.  (Optional) Add tests for your changes.
-5.  Submit a pull request.
+## 12. Disclaimer
 
-## 10. Project Roadmap
+This tool is a proof-of-concept. The accuracy of the model is highly dependent on the training data. **The predictions are not guaranteed to be accurate and should not be used as a substitute for legal advice.**
 
--   [ ] **Build a Comprehensive Dataset**: The highest priority is to expand the training dataset to include a wide variety of licenses.
--   [ ] **Hyperparameter Tuning**: Experiment with different training hyperparameters to improve model accuracy.
--   [ ] **Implement Evaluation Pipeline**: Add a proper evaluation pipeline to measure precision, recall, and F1-score.
--   [ ] **Advanced Scanning**: Enhance the `CodeGalaxyScanner` to detect license headers in source files.
--   [ ] **JSON Output**: Add a `--json` flag to output the results in a machine-readable format.
-
-## 11. Disclaimer
-
-This tool is a proof-of-concept and is provided "as is" without warranty of any kind. The accuracy of the model is highly dependent on the size and quality of the training data. **The predictions are not guaranteed to be accurate and should not be used as a substitute for legal advice.**
-
-## 12. License
+## 13. License
 
 This project is licensed under the MIT License.

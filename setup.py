@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="license-detect",
-    version="4.0.0",
+    version="5.0.0",
     packages=find_packages(),
     entry_points={
         "console_scripts": [
@@ -15,5 +15,7 @@ setup(
         "accelerate>=0.26.0",
         "evaluate",
         "scikit-learn",
+        "fastapi",
+        "uvicorn",
     ],
 )
