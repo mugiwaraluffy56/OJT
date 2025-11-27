@@ -53,9 +53,9 @@ AI License Detector aims to address this challenge by providing a more intellige
 
 The core of this tool is a transformer-based language model from the Hugging Face ecosystem. The current implementation utilizes `microsoft/MiniLM-L12-H384-uncased`, a distilled version of BERT that offers a balance of performance and efficiency. This model is capable of understanding the contextual nuances of language, making it well-suited for classifying complex legal texts like software licenses.
 
-### 3.2. Dynamic Learning: On-the-Fly Fine-Tuning
+### 3.2. Train-then-Infer Workflow
 
-A key feature of this tool is its ability to learn and adapt. Every time the `license-detect` command is executed, the language model is fine-tuned on the dataset of license texts found in the `data` directory. This is achieved using the `transformers.Trainer` utility, which provides a high-level API for training and evaluation. The hyperparameters for training can be found in the `SoulReader.train` method and can be adjusted to optimize performance.
+This project now follows a more robust and efficient "train-then-infer" workflow. A dedicated script, `train.py`, is used to fine-tune the AI model on the dataset of license texts. This process creates a fine-tuned model that is saved to the `fine-tuned-model` directory. The `license-detect` command then loads this pre-trained, fine-tuned model for fast and efficient inference, without the need to retrain every time.
 
 ### 3.3. The Scanner: Codebase Analysis
 
@@ -64,7 +64,8 @@ The `CodeGalaxyScanner` is responsible for finding potential license files withi
 ## 4. Features
 
 -   **State-of-the-Art AI Model**: Utilizes a `microsoft/MiniLM-L12-H384-uncased` model for semantic text classification.
--   **Dynamic On-the-Fly Training**: The model is fine-tuned on the available data with every run, ensuring it's always up-to-date.
+-   **Dedicated Training Pipeline**: A `train.py` script for fine-tuning the model on your custom dataset.
+-   **Saved and Reusable Model**: The fine-tuned model is saved to disk, allowing for fast inference without retraining.
 -   **Extensible and Scalable Dataset**: The training dataset can be easily expanded by adding new license files.
 -   **Automated Data Sourcing**: A utility script, `download_licenses.py`, is included to fetch license texts from the official SPDX license list.
 -   **Recursive Directory Scanning**: The tool can analyze entire codebases to identify license files.
@@ -98,12 +99,21 @@ The `CodeGalaxyScanner` is responsible for finding potential license files withi
 
 ## 6. Comprehensive Usage Guide
 
-### 6.1. CLI Arguments
+This tool follows a two-step process: **Train**, then **Detect**.
 
-The tool is run via the `license-detect` command, which takes a single positional argument:
--   `path`: The path to a file or directory to be analyzed.
+### Step 1: Train the Model
 
-### 6.2. Usage Scenarios
+Before you can detect licenses, you must first train the AI model on the dataset in the `data` directory.
+
+Run the training script:
+```sh
+python3 train.py
+```
+This will fine-tune the model and save it to the `fine-tuned-model` directory. You only need to run this script when you have updated the training data.
+
+### Step 2: Detect Licenses
+
+Once the model is trained, you can use the `license-detect` command to analyze your codebases.
 
 **Scanning an entire codebase:**
 ```sh
@@ -115,18 +125,13 @@ license-detect /path/to/your/project
 license-detect /path/to/your/LICENSE.md
 ```
 
-**Scanning the current directory:**
-```sh
-license-detect .
-```
-
 ## 7. Dataset Curation and Model Training
 
 ### 7.1. The Critical Role of Data
 
 The accuracy of this AI model is directly proportional to the size and quality of its training data. The current dataset is small and intended as a proof-of-concept. For a production-ready system, a dataset containing hundreds or thousands of examples for each license category is required.
 
-### 7.2. Expanding the Dataset
+### 7.2. Expanding the Dataset and Retraining
 
 You can improve the model's accuracy by adding more license texts to the `data` directory.
 
@@ -134,19 +139,25 @@ You can improve the model's accuracy by adding more license texts to the `data` 
 
 1.  Open `download_licenses.py` and add the desired SPDX license IDs to the `LICENSE_IDS` list.
 2.  Run the script: `python3 download_licenses.py`.
-3.  Open `license_detector/cli.py` and update the `filename_to_canonical` dictionary to map the new filenames to their canonical names.
+3.  Open `license_detector/cli.py` and `train.py` and update the `filename_to_canonical` dictionary to map the new filenames to their canonical names.
 
 **Adding a license manually:**
 
 1.  Save the license text to a `.txt` file in the `data` directory.
-2.  Update the `filename_to_canonical` dictionary in `license_detector/cli.py`.
+2.  Update the `filename_to_canonical` dictionary in `train.py`.
+
+After expanding the dataset, simply run the training script again to create an updated fine-tuned model:
+```sh
+python3 train.py
+```
 
 ## 8. Architectural Blueprint
 
 -   `license_detector/`: The main Python package.
-    -   `cli.py`: The entry point for the CLI. It orchestrates the process of scanning, training, and prediction.
-    -   `models/soul_reader.py`: Defines the `SoulReader` class, which encapsulates the `transformers` model, tokenizer, and the training and prediction logic.
+    -   `cli.py`: The entry point for the `license-detect` command. It loads the fine-tuned model and uses it for inference.
+    -   `models/soul_reader.py`: Defines the `SoulReader` class, which encapsulates the `transformers` model and the training and prediction logic.
     -   `scanner/code_galaxy.py`: Defines the `CodeGalaxyScanner` class, responsible for finding potential license files.
+-   `train.py`: The dedicated script for training the model.
 -   `data/`: Contains the `.txt` files used for training the model.
 -   `download_licenses.py`: A utility script for downloading license texts from the SPDX repository.
 -   `setup.py`: Defines the project's metadata and dependencies.

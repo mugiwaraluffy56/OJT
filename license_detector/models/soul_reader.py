@@ -3,6 +3,8 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
 from torch.utils.data import Dataset
+import os
+import json
 
 class LicenseDataset(Dataset):
     def __init__(self, encodings, labels):
@@ -18,54 +20,42 @@ class LicenseDataset(Dataset):
         return len(self.labels)
 
 class SoulReader(BaseModel):
-    def __init__(self, model_name="microsoft/MiniLM-L12-H384-uncased"):
+    def __init__(self, model_name_or_path="microsoft/MiniLM-L12-H384-uncased", candidate_labels=None):
         print("The AI License Soul-Reader™ is materializing from the ether...")
-        self.model_name = model_name
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.candidate_labels = [
-            "MIT",
-            "Apache-2.0",
-            "GPL-3.0-only",
-            "GPL-2.0-only",
-            "LGPL-3.0-only",
-            "BSD-3-Clause",
-            "BSD-2-Clause",
-            "ISC",
-            "MPL-2.0",
-            "CC-BY-4.0",
-        ]
-        self.label_to_id_ci = {label.lower(): i for i, label in enumerate(self.candidate_labels)} # Case-insensitive mapping
+        self.model_name_or_path = model_name_or_path
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+        
+        if candidate_labels:
+            self.candidate_labels = candidate_labels
+        else:
+            self.candidate_labels = [
+                "MIT", "Apache-2.0", "GPL-3.0-only", "GPL-2.0-only", "LGPL-3.0-only",
+                "BSD-3-Clause", "BSD-2-Clause", "ISC", "MPL-2.0", "CC-BY-4.0",
+            ]
+        
+        self.label_to_id_ci = {label.lower(): i for i, label in enumerate(self.candidate_labels)}
         self.id_to_label = {i: label for i, label in enumerate(self.candidate_labels)}
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=len(self.candidate_labels))
-        self.model.to('cpu') # Ensure model is on CPU
-        self.trained = False
+        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, num_labels=len(self.candidate_labels))
+        self.model.to('cpu')
+        self.trained = os.path.exists(os.path.join(model_name_or_path, 'pytorch_model.bin')) or os.path.exists(os.path.join(model_name_or_path, 'model.safetensors'))
 
     def train(self, X_train: list, y_train: list):
         print("Training the AI License Soul-Reader™...")
-        self.model.to('cpu') # Ensure model is on CPU for training too if not already
         train_encodings = self.tokenizer(X_train, truncation=True, padding=True, max_length=512)
         
-        train_labels = []
-        for label in y_train:
-            if label.lower() in self.label_to_id_ci:
-                train_labels.append(self.label_to_id_ci[label.lower()])
-            else:
-                print(f"Warning: Training label '{label}' not found in candidate labels. Skipping.")
-
-        if not train_labels:
-            raise ValueError("No valid training labels found. Cannot train the model.")
+        train_labels = [self.label_to_id_ci[label.lower()] for label in y_train]
 
         train_dataset = LicenseDataset(train_encodings, train_labels)
 
         training_args = TrainingArguments(
-            output_dir='./results',          # output directory
-            num_train_epochs=3,              # total number of training epochs
-            per_device_train_batch_size=8,   # batch size per device during training
-            warmup_steps=500,                # number of warmup steps for learning rate scheduler
-            weight_decay=0.01,               # strength of weight decay
-            logging_dir='./logs',            # directory for storing logs
+            output_dir='./results',
+            num_train_epochs=3,
+            per_device_train_batch_size=8,
+            warmup_steps=100,
+            weight_decay=0.01,
+            logging_dir='./logs',
             logging_steps=10,
-            no_cuda=True, # Explicitly tell Trainer to not use CUDA (and by extension, MPS)
+            no_cuda=True,
         )
 
         trainer = Trainer(
@@ -78,17 +68,23 @@ class SoulReader(BaseModel):
         self.trained = True
         print("AI License Soul-Reader™ trained successfully!")
 
+    def save_model(self, path: str):
+        self.model.save_pretrained(path)
+        self.tokenizer.save_pretrained(path)
+        # Save the candidate labels as well, so we can load them later
+        with open(os.path.join(path, "candidate_labels.json"), "w") as f:
+            json.dump(self.candidate_labels, f)
+
+    @classmethod
+    def from_pretrained(cls, path: str):
+        with open(os.path.join(path, "candidate_labels.json"), "r") as f:
+            candidate_labels = json.load(f)
+        return cls(model_name_or_path=path, candidate_labels=candidate_labels)
+
     def predict(self, text: str) -> str:
         if not self.trained:
-            print("Warning: Soul-Reader has not been trained. Performing untrained prediction (might be inaccurate).")
-            inputs = self.tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512).to('cpu')
-            with torch.no_grad():
-                logits = self.model(**inputs).logits
-            probabilities = F.softmax(logits, dim=1)
-            predicted_id = torch.argmax(probabilities, dim=1).item()
-            return self.id_to_label[predicted_id]
+            print("Warning: This model has not been fine-tuned. Predictions are based on the base model and may be inaccurate.")
 
-        print("Gazing into the soul of the text with trained wisdom...")
         inputs = self.tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512).to('cpu')
         with torch.no_grad():
             logits = self.model(**inputs).logits
