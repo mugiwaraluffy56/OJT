@@ -1,0 +1,17 @@
+# AI model training results and logs
+results/
+logs/
+
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
