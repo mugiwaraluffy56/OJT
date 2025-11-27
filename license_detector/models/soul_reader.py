@@ -2,9 +2,10 @@ from .base import BaseModel
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 import os
 import json
+import numpy as np
 
 class LicenseDataset(Dataset):
     def __init__(self, encodings, labels):
@@ -42,9 +43,7 @@ class SoulReader(BaseModel):
     def train(self, X_train: list, y_train: list):
         print("Training the AI License Soul-Reader™...")
         train_encodings = self.tokenizer(X_train, truncation=True, padding=True, max_length=512)
-        
         train_labels = [self.label_to_id_ci[label.lower()] for label in y_train]
-
         train_dataset = LicenseDataset(train_encodings, train_labels)
 
         training_args = TrainingArguments(
@@ -68,10 +67,26 @@ class SoulReader(BaseModel):
         self.trained = True
         print("AI License Soul-Reader™ trained successfully!")
 
+    def evaluate(self, X_val: list, y_val: list, compute_metrics):
+        print("Evaluating the AI License Soul-Reader™...")
+        val_encodings = self.tokenizer(X_val, truncation=True, padding=True, max_length=512)
+        val_labels = [self.label_to_id_ci[label.lower()] for label in y_val]
+        val_dataset = LicenseDataset(val_encodings, val_labels)
+        
+        predictions = []
+        with torch.no_grad():
+            for item in val_dataset:
+                inputs = {key: val.unsqueeze(0) for key, val in item.items() if key != 'labels'}
+                logits = self.model(**inputs).logits
+                pred = torch.argmax(logits, dim=1).item()
+                predictions.append(pred)
+
+        return compute_metrics(predictions=np.array(predictions), labels=np.array(val_labels))
+
+
     def save_model(self, path: str):
         self.model.save_pretrained(path)
         self.tokenizer.save_pretrained(path)
-        # Save the candidate labels as well, so we can load them later
         with open(os.path.join(path, "candidate_labels.json"), "w") as f:
             json.dump(self.candidate_labels, f)
 

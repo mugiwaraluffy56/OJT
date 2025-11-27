@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="license-detect",
-    version="3.0.0",
+    version="4.0.0",
     packages=find_packages(),
     entry_points={
         "console_scripts": [
@@ -10,8 +10,10 @@ setup(
         ],
     },
     install_requires=[
-        "transformers",
+        "transformers>=4.20.0",
         "torch",
         "accelerate>=0.26.0",
+        "evaluate",
+        "scikit-learn",
     ],
 )

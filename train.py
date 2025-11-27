@@ -1,23 +1,36 @@
 import os
+import numpy as np
+from sklearn.model_selection import train_test_split
+import evaluate
 from license_detector.models.soul_reader import SoulReader
+
+def compute_metrics(predictions, labels):
+    """
+    Computes accuracy, precision, recall, and F1-score for the model's predictions.
+    """
+    precision_metric = evaluate.load("precision")
+    recall_metric = evaluate.load("recall")
+    f1_metric = evaluate.load("f1")
+    accuracy_metric = evaluate.load("accuracy")
+
+    return {
+        'accuracy': accuracy_metric.compute(predictions=predictions, references=labels)["accuracy"],
+        'precision': precision_metric.compute(predictions=predictions, references=labels, average='weighted')["precision"],
+        'recall': recall_metric.compute(predictions=predictions, references=labels, average='weighted')["recall"],
+        'f1': f1_metric.compute(predictions=predictions, references=labels, average='weighted')["f1"],
+    }
 
 def main():
     """
-    This script trains the AI License Soul-Reader model on the dataset in the `data` directory
-    and saves the fine-tuned model to disk.
+    This script trains and evaluates the AI License Soul-Reader model.
     """
-    print("Starting the training process for the AI License Soul-Reader...")
+    print("Starting the training and evaluation process...")
 
-    # Construct the absolute path to the data directory
+    # Load data
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(script_dir, "data")
-
-    # Load training data from the data directory
-    X_train = []
-    y_train = []
-    
-    # Dynamically scan the data directory for license files
-    # and map filenames to canonical license names.
+    X = []
+    y = []
     filename_to_canonical = {
         "mit": "MIT",
         "apache-2.0": "Apache-2.0",
@@ -30,27 +43,32 @@ def main():
         "mpl-2.0": "MPL-2.0",
         "cc-by-4.0": "CC-BY-4.0",
     }
-    
     for filename in os.listdir(data_dir):
         if filename.endswith(".txt"):
             filepath = os.path.join(data_dir, filename)
             filename_base = os.path.splitext(filename)[0]
-            
             if filename_base in filename_to_canonical:
-                canonical_name = filename_to_canonical[filename_base]
                 with open(filepath, "r", encoding="utf-8") as f:
-                    X_train.append(f.read())
-                    y_train.append(canonical_name)
-            else:
-                print(f"Warning: No canonical name mapping found for '{filename}'. Skipping.")
+                    X.append(f.read())
+                    y.append(filename_to_canonical[filename_base])
 
-    if not X_train:
-        print("Error: No training data found. Cannot train the model.")
+    if not X:
+        print("Error: No training data found.")
         return
 
+    # Split data into training and validation sets
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+    
     # Initialize and train the model
     soul_reader = SoulReader()
     soul_reader.train(X_train, y_train)
+
+    # Evaluate the model
+    print("\n--- Evaluation Results ---")
+    metrics = soul_reader.evaluate(X_val, y_val, compute_metrics)
+    for key, value in metrics.items():
+        print(f"{key.capitalize()}: {value:.4f}")
+    print("------------------------\n")
 
     # Save the fine-tuned model
     print("Saving the fine-tuned model...")
