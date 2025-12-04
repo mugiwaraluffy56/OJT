@@ -134,33 +134,14 @@ cd backend
 
 #### Create Virtual Environment
 
-<div class="os-tabs-container">
-
 **Select your operating system:**
 
-| [🍎 macOS](#tab-backend-setup-macos) | [🐧 Linux](#tab-backend-setup-linux) | [🪟 Windows](#tab-backend-setup-windows) |
+| [🍎 macOS](#macos-setup) | [🐧 Linux](#linux-setup) | [🪟 Windows](#windows-setup) |
 |:---:|:---:|:---:|
 
-<div id="tab-backend-setup-macos">
+---
 
-**macOS Instructions:**
-
-```bash
-# Create virtual environment
-python3 -m venv venv
-
-# Activate virtual environment
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-</div>
-
-<div id="tab-backend-setup-linux">
-
-**Linux Instructions:**
+#### <a id="macos-setup"></a>🍎 macOS
 
 ```bash
 # Create virtual environment
@@ -173,11 +154,24 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-</div>
+---
 
-<div id="tab-backend-setup-windows">
+#### <a id="linux-setup"></a>🐧 Linux
 
-**Windows Instructions:**
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+---
+
+#### <a id="windows-setup"></a>🪟 Windows
 
 ```bash
 # Create virtual environment
@@ -196,9 +190,7 @@ pip install -r requirements.txt
 > ```
 > if you encounter script execution policy errors.
 
-</div>
-
-</div>
+---
 
 ### 3. Frontend Setup
 
@@ -216,17 +208,14 @@ npm install
 
 ### Starting the Backend Server
 
-<div class="os-tabs-container">
-  <input type="radio" name="os-backend-start" id="tab-backend-start-macos-radio" checked class="os-tab-radio">
-  <label for="tab-backend-start-macos-radio" class="os-tab-label">macOS</label>
+**Select your operating system:**
 
-  <input type="radio" name="os-backend-start" id="tab-backend-start-linux-radio" class="os-tab-radio">
-  <label for="tab-backend-start-linux-radio" class="os-tab-label">Linux</label>
+| [🍎 macOS](#macos-start) | [🐧 Linux](#linux-start) | [🪟 Windows](#windows-start) |
+|:---:|:---:|:---:|
 
-  <input type="radio" name="os-backend-start" id="tab-backend-start-windows-radio" class="os-tab-radio">
-  <label for="tab-backend-start-windows-radio" class="os-tab-label">Windows</label>
+---
 
-  <div class="os-tab-content" id="tab-backend-start-macos-content">
+#### <a id="macos-start"></a>🍎 macOS
 
 ```bash
 # From backend directory
@@ -239,9 +228,9 @@ source venv/bin/activate
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-  </div>
+---
 
-  <div class="os-tab-content" id="tab-backend-start-linux-content">
+#### <a id="linux-start"></a>🐧 Linux
 
 ```bash
 # From backend directory
@@ -254,9 +243,9 @@ source venv/bin/activate
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-  </div>
+---
 
-  <div class="os-tab-content" id="tab-backend-start-windows-content">
+#### <a id="windows-start"></a>🪟 Windows
 
 ```bash
 # From backend directory
@@ -269,66 +258,13 @@ venv\Scripts\activate
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Alternative for Windows (PowerShell)**:
+**Alternative for Windows (PowerShell):**
 ```powershell
 .\venv\Scripts\Activate.ps1
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-  </div>
-</div>
-
-<style>
-/* Basic styling for the CSS-only tabs */
-.os-tabs-container {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 1em;
-}
-
-.os-tab-radio {
-  display: none; /* Hide the actual radio button */
-}
-
-.os-tab-label {
-  padding: 0.5em 1em;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-bottom: none;
-  background-color: #f0f0f0;
-  margin-right: 5px;
-  border-radius: 5px 5px 0 0;
-  transition: background-color 0.3s ease;
-  user-select: none; /* Prevent text selection */
-}
-
-.os-tab-label:hover {
-  background-color: #e0e0e0;
-}
-
-.os-tab-radio:checked + .os-tab-label {
-  background-color: #fff;
-  border-color: #007bff;
-  color: #007bff;
-  font-weight: bold;
-}
-
-.os-tab-content {
-  display: none;
-  width: 100%;
-  border: 1px solid #ccc;
-  padding: 1em;
-  border-radius: 0 5px 5px 5px;
-  margin-top: -1px; /* Overlap with the tab border */
-}
-
-/* Show the content associated with the checked radio button */
-#tab-backend-start-macos-radio:checked ~ #tab-backend-start-macos-content,
-#tab-backend-start-linux-radio:checked ~ #tab-backend-start-linux-content,
-#tab-backend-start-windows-radio:checked ~ #tab-backend-start-windows-content {
-  display: block;
-}
-</style>
+---
 
 The API will be available at: `http://localhost:8000`
 
