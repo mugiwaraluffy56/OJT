@@ -127,22 +127,64 @@ cd final_license
 
 ### 2. Backend Setup
 
+#### Navigate to Backend Directory
 ```bash
-# Navigate to backend directory
 cd backend
+```
 
+#### Create Virtual Environment
+
+<details open>
+<summary><b>🍎 macOS</b></summary>
+
+```bash
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 
 # Activate virtual environment
-# On macOS/Linux:
 source venv/bin/activate
-# On Windows:
-# venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
+</details>
+
+<details>
+<summary><b>🐧 Linux</b></summary>
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+</details>
+
+<details>
+<summary><b>🪟 Windows</b></summary>
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+**Note**: On Windows, you may need to run PowerShell as Administrator and execute:
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+if you encounter script execution policy errors.
+
+</details>
 
 ### 3. Frontend Setup
 
@@ -160,12 +202,56 @@ npm install
 
 ### Starting the Backend Server
 
+<details open>
+<summary><b>🍎 macOS</b></summary>
+
 ```bash
-# From backend directory with activated virtual environment
+# From backend directory
 cd backend
-source venv/bin/activate  # On macOS/Linux
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Start the server
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
+</details>
+
+<details>
+<summary><b>🐧 Linux</b></summary>
+
+```bash
+# From backend directory
+cd backend
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Start the server
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+</details>
+
+<details>
+<summary><b>🪟 Windows</b></summary>
+
+```bash
+# From backend directory
+cd backend
+
+# Activate virtual environment
+venv\Scripts\activate
+
+# Start the server
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Alternative for Windows (PowerShell)**:
+```powershell
+.\venv\Scripts\Activate.ps1
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+</details>
 
 The API will be available at: `http://localhost:8000`
 
