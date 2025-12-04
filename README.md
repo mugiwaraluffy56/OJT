@@ -1,4 +1,4 @@
-# ðŸ” ML-Assisted License Detection System
+# 🔍 ML-Assisted License Detection System
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-green.svg)](https://fastapi.tiangolo.com/)
@@ -9,7 +9,7 @@ A cutting-edge, full-stack application that leverages **Machine Learning** and *
 
 ---
 
-## ðŸ“‹ Table of Contents
+## 📋 Table of Contents
 
 - [Features](#-features)
 - [System Architecture](#-system-architecture)
@@ -26,17 +26,17 @@ A cutting-edge, full-stack application that leverages **Machine Learning** and *
 
 ---
 
-## âœ¨ Features
+## ✨ Features
 
 ### Core Capabilities
-- **ðŸŽ¯ Multi-Stage Detection Pipeline**: Combines preprocessing, SPDX rule-based scanning, ML classification, and hybrid decision-making
-- **ðŸ¤– Advanced ML Models**: Utilizes TF-IDF and BERT-based classifiers for high-accuracy license detection
-- **ðŸ“Š 100+ License Support**: Comprehensive coverage of SPDX-compliant licenses
-- **âš¡ Real-Time Analysis**: Sub-500ms response time for license detection
-- **ðŸ” Conflict Detection**: Automatically identifies incompatible license combinations
-- **ðŸ“„ Compliance Reports**: Generates detailed compliance reports with risk assessments
-- **ðŸŽ¨ Modern UI**: Beautiful, responsive React-based interface with smooth transitions
-- **ðŸ”„ Multiple Input Methods**: Support for text input and file uploads
+- **🎯 Multi-Stage Detection Pipeline**: Combines preprocessing, SPDX rule-based scanning, ML classification, and hybrid decision-making
+- **🤖 Advanced ML Models**: Utilizes TF-IDF and BERT-based classifiers for high-accuracy license detection
+- **📊 100+ License Support**: Comprehensive coverage of SPDX-compliant licenses
+- **⚡ Real-Time Analysis**: Sub-500ms response time for license detection
+- **🔍 Conflict Detection**: Automatically identifies incompatible license combinations
+- **📄 Compliance Reports**: Generates detailed compliance reports with risk assessments
+- **🎨 Modern UI**: Beautiful, responsive React-based interface with smooth transitions
+- **🔄 Multiple Input Methods**: Support for text input and file uploads
 
 ### Technical Highlights
 - **Hybrid Engine**: Intelligently combines rule-based and ML approaches for optimal accuracy
@@ -47,7 +47,7 @@ A cutting-edge, full-stack application that leverages **Machine Learning** and *
 
 ---
 
-## ðŸ—ï¸ System Architecture
+## 🏗️ System Architecture
 
 ```mermaid
 graph TB
@@ -79,7 +79,7 @@ graph TB
 
 ---
 
-## ðŸ› ï¸ Technology Stack
+## 🛠️ Technology Stack
 
 ### Backend
 - **Framework**: FastAPI 0.104+
@@ -105,7 +105,7 @@ graph TB
 
 ---
 
-## ðŸ“¦ Prerequisites
+## 📦 Prerequisites
 
 Before installation, ensure you have the following installed:
 
@@ -116,7 +116,7 @@ Before installation, ensure you have the following installed:
 
 ---
 
-## ðŸš€ Installation
+## 🚀 Installation
 
 ### 1. Clone the Repository
 
@@ -156,7 +156,7 @@ npm install
 
 ---
 
-## ðŸ’» Usage
+## 💻 Usage
 
 ### Starting the Backend Server
 
@@ -194,7 +194,7 @@ pytest test_api.py --cov=app --cov-report=html
 
 ---
 
-## ðŸ“¡ API Documentation
+## 📡 API Documentation
 
 ### Base URL
 ```
@@ -286,53 +286,53 @@ Returns detailed information about a specific license.
 
 ---
 
-## ðŸ“ Project Structure
+## 📁 Project Structure
 
 ```
 final_license/
-â”œâ”€â”€ backend/
-â”‚   â”œâ”€â”€ app/
-â”‚   â”‚   â”œâ”€â”€ main.py                 # FastAPI application entry point
-â”‚   â”‚   â”œâ”€â”€ api/                    # API route handlers
-â”‚   â”‚   â”œâ”€â”€ core/                   # Core configurations
-â”‚   â”‚   â”œâ”€â”€ models/
-â”‚   â”‚   â”‚   â””â”€â”€ schemas.py          # Pydantic models
-â”‚   â”‚   â”œâ”€â”€ services/
-â”‚   â”‚   â”‚   â”œâ”€â”€ preprocessing.py    # Text preprocessing & BERT embeddings
-â”‚   â”‚   â”‚   â”œâ”€â”€ rule_engine.py      # SPDX rule-based detection
-â”‚   â”‚   â”‚   â”œâ”€â”€ ml_engine.py        # ML classification (TF-IDF + BERT)
-â”‚   â”‚   â”‚   â”œâ”€â”€ hybrid_engine.py    # Hybrid decision engine
-â”‚   â”‚   â”‚   â”œâ”€â”€ conflict_detector.py # License conflict detection
-â”‚   â”‚   â”‚   â””â”€â”€ report_generator.py # Compliance report generation
-â”‚   â”‚   â””â”€â”€ utils/                  # Utility functions
-â”‚   â”œâ”€â”€ data/
-â”‚   â”‚   â”œâ”€â”€ spdx_rules.json         # SPDX license patterns
-â”‚   â”‚   â”œâ”€â”€ training_data.csv       # ML training dataset
-â”‚   â”‚   â”œâ”€â”€ ml_model.pkl            # Trained TF-IDF model
-â”‚   â”‚   â””â”€â”€ bert_embeddings.json    # Pre-computed BERT embeddings
-â”‚   â”œâ”€â”€ requirements.txt            # Python dependencies
-â”‚   â””â”€â”€ test_api.py                 # API tests
-â”‚
-â”œâ”€â”€ frontend/
-â”‚   â”œâ”€â”€ src/
-â”‚   â”‚   â”œâ”€â”€ main.jsx                # React entry point
-â”‚   â”‚   â”œâ”€â”€ App.jsx                 # Main application component
-â”‚   â”‚   â”œâ”€â”€ components/
-â”‚   â”‚   â”‚   â”œâ”€â”€ FileUpload.jsx      # File upload component
-â”‚   â”‚   â”‚   â”œâ”€â”€ TextInput.jsx       # Text input component
-â”‚   â”‚   â”‚   â””â”€â”€ ResultsDisplay.jsx  # Results visualization
-â”‚   â”‚   â””â”€â”€ styles/
-â”‚   â”‚       â””â”€â”€ App.css             # Application styles
-â”‚   â”œâ”€â”€ index.html                  # HTML entry point
-â”‚   â”œâ”€â”€ package.json                # Node dependencies
-â”‚   â””â”€â”€ vite.config.js              # Vite configuration
-â”‚
-â””â”€â”€ README.md                       # This file
+├── backend/
+│   ├── app/
+│   │   ├── main.py                 # FastAPI application entry point
+│   │   ├── api/                    # API route handlers
+│   │   ├── core/                   # Core configurations
+│   │   ├── models/
+│   │   │   └── schemas.py          # Pydantic models
+│   │   ├── services/
+│   │   │   ├── preprocessing.py    # Text preprocessing & BERT embeddings
+│   │   │   ├── rule_engine.py      # SPDX rule-based detection
+│   │   │   ├── ml_engine.py        # ML classification (TF-IDF + BERT)
+│   │   │   ├── hybrid_engine.py    # Hybrid decision engine
+│   │   │   ├── conflict_detector.py # License conflict detection
+│   │   │   └── report_generator.py # Compliance report generation
+│   │   └── utils/                  # Utility functions
+│   ├── data/
+│   │   ├── spdx_rules.json         # SPDX license patterns
+│   │   ├── training_data.csv       # ML training dataset
+│   │   ├── ml_model.pkl            # Trained TF-IDF model
+│   │   └── bert_embeddings.json    # Pre-computed BERT embeddings
+│   ├── requirements.txt            # Python dependencies
+│   └── test_api.py                 # API tests
+│
+├── frontend/
+│   ├── src/
+│   │   ├── main.jsx                # React entry point
+│   │   ├── App.jsx                 # Main application component
+│   │   ├── components/
+│   │   │   ├── FileUpload.jsx      # File upload component
+│   │   │   ├── TextInput.jsx       # Text input component
+│   │   │   └── ResultsDisplay.jsx  # Results visualization
+│   │   └── styles/
+│   │       └── App.css             # Application styles
+│   ├── index.html                  # HTML entry point
+│   ├── package.json                # Node dependencies
+│   └── vite.config.js              # Vite configuration
+│
+└── README.md                       # This file
 ```
 
 ---
 
-## ðŸ§® Algorithms & Data Structures
+## 🧮 Algorithms & Data Structures
 
 ### 1. **Preprocessing**
 - **Text Normalization**: Lowercasing, whitespace normalization, special character handling
@@ -368,13 +368,13 @@ final_license/
 
 ---
 
-## ðŸ“Š Performance Metrics
+## 📊 Performance Metrics
 
 ### Success Criteria
-- âœ… **Accuracy**: â‰¥ 85% on test dataset
-- âœ… **License Coverage**: 100+ SPDX licenses
-- âœ… **Response Time**: < 500ms average
-- âœ… **Conflict Detection**: 95%+ accuracy
+- ✅ **Accuracy**: ≥ 85% on test dataset
+- ✅ **License Coverage**: 100+ SPDX licenses
+- ✅ **Response Time**: < 500ms average
+- ✅ **Conflict Detection**: 95%+ accuracy
 
 ### Benchmarks
 - **Average Processing Time**: 245ms
@@ -387,7 +387,7 @@ final_license/
 
 ---
 
-## ðŸ¤ Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -405,13 +405,13 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## ðŸ“ License
+## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## ðŸ™ Acknowledgments
+## 🙏 Acknowledgments
 
 - **SPDX Project** for license standardization
 - **Hugging Face** for transformer models
@@ -420,13 +420,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## ðŸ“§ Contact
+## 📧 Contact
 
 For questions, issues, or suggestions, please open an issue on GitHub or contact the development team.
 
 ---
 
-## ðŸ”® Future Enhancements
+## 🔮 Future Enhancements
 
 - [ ] Support for additional license formats (non-SPDX)
 - [ ] Batch file processing
@@ -441,8 +441,8 @@ For questions, issues, or suggestions, please open an issue on GitHub or contact
 
 <div align="center">
 
-**Built with â¤ï¸ using FastAPI, React, and Machine Learning**
+**Built with ❤️ using FastAPI, React, and Machine Learning**
 
-â­ Star this repository if you find it helpful!
+⭐ Star this repository if you find it helpful!
 
 </div>
