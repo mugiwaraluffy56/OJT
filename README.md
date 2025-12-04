@@ -134,29 +134,16 @@ cd backend
 
 #### Create Virtual Environment
 
-<div class="os-tabs">
-  <div class="tab-buttons">
-    <button class="tab-button active" onclick="switchTab(event, 'backend-setup-macos')">🍎 macOS</button>
-    <button class="tab-button" onclick="switchTab(event, 'backend-setup-linux')">🐧 Linux</button>
-    <button class="tab-button" onclick="switchTab(event, 'backend-setup-windows')">🪟 Windows</button>
-  </div>
+<div class="os-tabs-container">
 
-  <div id="backend-setup-macos" class="tab-content active">
+**Select your operating system:**
 
-```bash
-# Create virtual environment
-python3 -m venv venv
+| [🍎 macOS](#tab-backend-setup-macos) | [🐧 Linux](#tab-backend-setup-linux) | [🪟 Windows](#tab-backend-setup-windows) |
+|:---:|:---:|:---:|
 
-# Activate virtual environment
-source venv/bin/activate
+<div id="tab-backend-setup-macos">
 
-# Install dependencies
-pip install -r requirements.txt
-```
-
-  </div>
-
-  <div id="backend-setup-linux" class="tab-content">
+**macOS Instructions:**
 
 ```bash
 # Create virtual environment
@@ -169,9 +156,28 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-  </div>
+</div>
 
-  <div id="backend-setup-windows" class="tab-content">
+<div id="tab-backend-setup-linux">
+
+**Linux Instructions:**
+
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+</div>
+
+<div id="tab-backend-setup-windows">
+
+**Windows Instructions:**
 
 ```bash
 # Create virtual environment
@@ -184,87 +190,15 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-**Note**: On Windows, you may need to run PowerShell as Administrator and execute:
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-if you encounter script execution policy errors.
+> **Note**: On Windows, you may need to run PowerShell as Administrator and execute:
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
+> if you encounter script execution policy errors.
 
-  </div>
 </div>
 
-<style>
-.os-tabs {
-  margin: 20px 0;
-  border: 1px solid #e1e4e8;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.tab-buttons {
-  display: flex;
-  background-color: #f6f8fa;
-  border-bottom: 1px solid #e1e4e8;
-  padding: 0;
-  margin: 0;
-}
-
-.tab-button {
-  flex: 1;
-  padding: 12px 20px;
-  background: none;
-  border: none;
-  border-right: 1px solid #e1e4e8;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: #586069;
-  transition: all 0.2s ease;
-}
-
-.tab-button:last-child {
-  border-right: none;
-}
-
-.tab-button:hover {
-  background-color: #e1e4e8;
-  color: #24292e;
-}
-
-.tab-button.active {
-  background-color: #fff;
-  color: #0366d6;
-  border-bottom: 2px solid #0366d6;
-  margin-bottom: -1px;
-}
-
-.tab-content {
-  display: none;
-  padding: 20px;
-  background-color: #fff;
-}
-
-.tab-content.active {
-  display: block;
-}
-</style>
-
-<script>
-function switchTab(event, tabId) {
-  // Get all tab buttons and contents in the same container
-  const container = event.target.closest('.os-tabs');
-  const tabButtons = container.querySelectorAll('.tab-button');
-  const tabContents = container.querySelectorAll('.tab-content');
-  
-  // Remove active class from all buttons and contents
-  tabButtons.forEach(button => button.classList.remove('active'));
-  tabContents.forEach(content => content.classList.remove('active'));
-  
-  // Add active class to clicked button and corresponding content
-  event.target.classList.add('active');
-  container.querySelector('#' + tabId).classList.add('active');
-}
-</script>
+</div>
 
 ### 3. Frontend Setup
 
@@ -282,29 +216,17 @@ npm install
 
 ### Starting the Backend Server
 
-<div class="os-tabs">
-  <div class="tab-buttons">
-    <button class="tab-button active" onclick="switchTab(event, 'backend-start-macos')">🍎 macOS</button>
-    <button class="tab-button" onclick="switchTab(event, 'backend-start-linux')">🐧 Linux</button>
-    <button class="tab-button" onclick="switchTab(event, 'backend-start-windows')">🪟 Windows</button>
-  </div>
+<div class="os-tabs-container">
+  <input type="radio" name="os-backend-start" id="tab-backend-start-macos-radio" checked class="os-tab-radio">
+  <label for="tab-backend-start-macos-radio" class="os-tab-label">macOS</label>
 
-  <div id="backend-start-macos" class="tab-content active">
+  <input type="radio" name="os-backend-start" id="tab-backend-start-linux-radio" class="os-tab-radio">
+  <label for="tab-backend-start-linux-radio" class="os-tab-label">Linux</label>
 
-```bash
-# From backend directory
-cd backend
+  <input type="radio" name="os-backend-start" id="tab-backend-start-windows-radio" class="os-tab-radio">
+  <label for="tab-backend-start-windows-radio" class="os-tab-label">Windows</label>
 
-# Activate virtual environment
-source venv/bin/activate
-
-# Start the server
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-  </div>
-
-  <div id="backend-start-linux" class="tab-content">
+  <div class="os-tab-content" id="tab-backend-start-macos-content">
 
 ```bash
 # From backend directory
@@ -319,7 +241,22 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
   </div>
 
-  <div id="backend-start-windows" class="tab-content">
+  <div class="os-tab-content" id="tab-backend-start-linux-content">
+
+```bash
+# From backend directory
+cd backend
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Start the server
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+  </div>
+
+  <div class="os-tab-content" id="tab-backend-start-windows-content">
 
 ```bash
 # From backend directory
@@ -340,6 +277,58 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
   </div>
 </div>
+
+<style>
+/* Basic styling for the CSS-only tabs */
+.os-tabs-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+}
+
+.os-tab-radio {
+  display: none; /* Hide the actual radio button */
+}
+
+.os-tab-label {
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-bottom: none;
+  background-color: #f0f0f0;
+  margin-right: 5px;
+  border-radius: 5px 5px 0 0;
+  transition: background-color 0.3s ease;
+  user-select: none; /* Prevent text selection */
+}
+
+.os-tab-label:hover {
+  background-color: #e0e0e0;
+}
+
+.os-tab-radio:checked + .os-tab-label {
+  background-color: #fff;
+  border-color: #007bff;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.os-tab-content {
+  display: none;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 0 5px 5px 5px;
+  margin-top: -1px; /* Overlap with the tab border */
+}
+
+/* Show the content associated with the checked radio button */
+#tab-backend-start-macos-radio:checked ~ #tab-backend-start-macos-content,
+#tab-backend-start-linux-radio:checked ~ #tab-backend-start-linux-content,
+#tab-backend-start-windows-radio:checked ~ #tab-backend-start-windows-content {
+  display: block;
+}
+</style>
 
 The API will be available at: `http://localhost:8000`
 
